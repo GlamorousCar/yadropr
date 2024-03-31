@@ -4,32 +4,48 @@ import (
 	"github.com/kljensen/snowball"
 	"github.com/kljensen/snowball/english"
 	"strings"
+	"unicode"
 )
 
-func stemSentence(sentence string) map[string]interface{} {
-	mapOfWords := make(map[string]interface{})
+func stemWords(words []string) []string {
+	var stemmedWords []string
+	for _, word := range words {
+		splitWord := strings.Split(word, "'")
+		stemmedWord, _ := snowball.Stem(splitWord[0], "english", true)
+		stemmedWords = append(stemmedWords, stemmedWord)
 
-	splitSentence := strings.Split(sentence, " ")
-	for _, word := range splitSentence {
-		splitWord := strings.Split(word, "'") //обработка случая i'll и подобные
-
-		if len(splitWord) >= 1 {
-			stemmedWord, _ := snowball.Stem(splitWord[0], "english", true)
-			mapOfWords[stemmedWord] = true
-		}
 	}
-	return mapOfWords
+	return stemmedWords
 }
 
-func clearSentence(words map[string]interface{}) []string {
-	clearedSentence := []string{}
+func clearSentence(words []string) []string {
+	mapOfWords := make(map[string]interface{})
 
-	for word := range words {
+	var clearedSentence []string
+
+	for _, word := range words {
 		if !english.IsStopWord(word) {
-			clearedSentence = append(clearedSentence, word)
+			mapOfWords[word] = true
 		}
 
 	}
+	for word := range mapOfWords {
+		clearedSentence = append(clearedSentence, word)
+	}
+
+	return clearedSentence
+}
+
+func Normalize(sentence string) []string {
+	f := func(c rune) bool {
+		return (unicode.IsPunct(c) || unicode.IsSpace(c)) && c != '\''
+	}
+
+	splitSentence := strings.FieldsFunc(sentence, f)
+
+	stemmedSentence := stemWords(splitSentence)
+
+	clearedSentence := clearSentence(stemmedSentence)
 
 	return clearedSentence
 }

@@ -11,9 +11,7 @@ func main() {
 
 	flag.Parse()
 
-	stemmedWords := stemSentence(*inputString)
-	clearedSentence := clearSentence(stemmedWords)
+	processedSentence := Normalize(*inputString)
 
-	fmt.Println(strings.Join(clearedSentence, " "))
-
+	fmt.Println(strings.Join(processedSentence, " "))
 }
