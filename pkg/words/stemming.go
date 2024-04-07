@@ -1,4 +1,4 @@
-package main
+package words
 
 import (
 	"github.com/kljensen/snowball"
@@ -38,12 +38,13 @@ func clearSentence(words []string) []string {
 
 func Normalize(sentence string) []string {
 	f := func(c rune) bool {
-		return (unicode.IsPunct(c) || unicode.IsSpace(c)) && c != '\''
+		return (unicode.IsPunct(c) || unicode.IsSpace(c) || c == '<' || c == '>' || c == '=' || unicode.IsDigit(c)) && c != '\''
 	}
 
 	splitSentence := strings.FieldsFunc(sentence, f)
 
 	stemmedSentence := stemWords(splitSentence)
+	//fmt.Println(stemmedSentence)
 
 	clearedSentence := clearSentence(stemmedSentence)
 
