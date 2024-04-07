@@ -1,9 +1,16 @@
 
 build:
-	go build
+	go build -o dist/xkcd cmd/xkcd/main.go
 
 run:
-	$ go run . --s="follower brings bunch of questions"
-	$ go run . --s="i'll follow you as long as you are following me"
-	$ go run . --s="I'm saying: follow, followers!"
+	$ go run cmd/xkcd/main.go
+
+run-with-o:
+	$ go run cmd/xkcd/main.go -o
+
+run-with-n:
+	$ go run cmd/xkcd/main.go -n 15
+
+run_xkcd:
+	$ .dist/xkcd
 
